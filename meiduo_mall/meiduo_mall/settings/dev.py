@@ -14,19 +14,20 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+print(BASE_DIR)
 
-
+# 用过 SVN ---->git
+# 100 项 设置 都是有开发  有测试 之分
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'njl1cqp!!+f7ftd17$9420*9s-7lm)_e_k=@348shrlf0(00_p'
+SECRET_KEY = '^(iz&$^c#1j2aviymlzmqbsori7^pb%8!q&0c5vith!dyb2b2#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['www.meiduo.site']
-
 
 # Application definition
 
@@ -38,8 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # 注册子应用
+    # 注册自己的自用
     'apps.users',
+    'apps.contents',
+    'apps.verifications',
+    'apps.oauth',
 ]
 
 MIDDLEWARE = [
@@ -53,11 +57,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'meiduo_mall.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.jinja2.Jinja2',  # 1.jinja2模板引擎
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], # 2.模本文件夹路径
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # 2.模本文件夹路径
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -71,24 +74,21 @@ TEMPLATES = [
         },
     },
 ]
-
 WSGI_APPLICATION = 'meiduo_mall.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # 数据库引擎
-        'HOST': '127.0.0.1', # 数据库主机
-        'PORT': 3306, # 数据库端口
-        'USER': 'itheima', # 数据库用户名
-        'PASSWORD': '123456', # 数据库用户密码
-        'NAME': 'meiduo' # 数据库名字
+        'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
+        'HOST': '127.0.0.1',  # 数据库主机
+        'PORT': 3306,  # 数据库端口
+        'USER': 'itheima',  # 数据库用户名
+        'PASSWORD': '123456',  # 数据库用户密码
+        'NAME': 'meiduo'  # 数据库名字
     },
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -108,7 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -122,24 +121,44 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# 配置Redis
 CACHES = {
-    "default": { # 默认
+    # 默认 0 号
+    "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
-    "session": { # session
+    # session  1号
+    "session": {  # session
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+
+    # 图形验证码  2号
+    "verify_image_code": {  # session
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+# 保存短信验证码--3号库
+    "sms_code": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/3",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -147,7 +166,9 @@ CACHES = {
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "session"
-# 日志
+
+
+# 配置日志
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,  # 是否禁用已经存在的日志器
@@ -189,5 +210,23 @@ LOGGING = {
     }
 }
 # 实例化日志对象
+# 单例设计模式---在整个项目中 保持 一份内存空间
 import logging
 logger = logging.getLogger('django')
+
+
+# 配置认证的 User对象
+#                子应用.模型类
+AUTH_USER_MODEL = 'users.User'
+
+# 配置 认证 后端--多账号登录
+AUTHENTICATION_BACKENDS = ['apps.users.utils.UsernameMobileAuthBackend']
+
+
+# 设置 重定向 登录的路由
+LOGIN_URL = '/login/'
+
+# QQ登录
+QQ_CLIENT_ID = '101518219'
+QQ_CLIENT_SECRET = '418d84ebdc7241efb79536886ae95224'
+QQ_REDIRECT_URI = 'http://www.meiduo.site:8000/oauth_callback'

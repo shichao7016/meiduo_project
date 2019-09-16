@@ -14,13 +14,15 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+print(BASE_DIR)
 
-
+# 用过 SVN ---->git
+# 100 项 设置 都是有开发  有测试 之分
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'njl1cqp!!+f7ftd17$9420*9s-7lm)_e_k=@348shrlf0(00_p'
+SECRET_KEY = '^(iz&$^c#1j2aviymlzmqbsori7^pb%8!q&0c5vith!dyb2b2#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False

@@ -5,9 +5,12 @@
 	<title>美多商城-注册</title>
 	<link rel="stylesheet" type="text/css" href="../static/css/reset.css">
 	<link rel="stylesheet" type="text/css" href="{{ static('css/main.css') }}">
+	<script type="text/javascript" src="{{ static('js/vue-2.5.16.js') }}"></script>
+	<script type="text/javascript" src="{{ static('js/host.js') }}"></script>
 </head>
 <body>
-	<div class="register_con">
+	<div id="app">
+		<div class="register_con">
 		<div class="l_con fl">
 			<a href="index.html" class="reg_logo"><img src="images/logo.png"></a>
 			<div class="reg_slogan">商品美 · 种类多 · 欢迎光临</div>
@@ -24,13 +27,13 @@
 				<ul>
 					<li>
 						<label>用户名:</label>
-						<input type="text" name="user_name" id="user_name">
-						<span class="error_tip">请输入5-20个字符的用户</span>
-					</li>					
+						<input v-model="username" @blur="check_username" type="text" name="user_name" id="user_name">
+						<span v-show="error_name" class="error_tip">请输入5-20个字符的用户</span>
+					</li>
 					<li>
 						<label>密码:</label>
-						<input type="password" name="pwd" id="pwd">
-						<span class="error_tip">请输入8-20位的密码</span>
+						<input v-model="password"@blur="check_pwd" type="password" name="pwd" id="pwd">
+						<span v-show="error_password" class="error_tip">请输入8-20位的密码</span>
 					</li>
 					<li>
 						<label>确认密码:</label>
@@ -45,7 +48,7 @@
 					<li>
                         <label>图形验证码:</label>
                         <input type="text" name="pic_code" id="pic_code" class="msg_input">
-                        <img src="images/pic_code.jpg" alt="图形验证码" class="pic_code">
+                        <img src="{{ static('images/pic_code.jpg') }}" alt="图形验证码" class="pic_code">
                         <span class="error_tip">请填写图形验证码</span>
                     </li>
 					<li>
@@ -62,7 +65,7 @@
 					<li class="reg_sub">
 						<input type="submit" value="注 册">
 					</li>
-				</ul>				
+				</ul>
 				</form>
 			</div>
 
@@ -70,7 +73,7 @@
 
 	</div>
 
-	<div class="footer no-mp">
+		<div class="footer no-mp">
 		<div class="foot_link">
 			<a href="#">关于我们</a>
 			<span>|</span>
@@ -78,11 +81,13 @@
 			<span>|</span>
 			<a href="#">招聘人才</a>
 			<span>|</span>
-			<a href="#">友情链接</a>		
+			<a href="#">友情链接</a>
 		</div>
 		<p>CopyRight © 2016 北京美多商业股份有限公司 All Rights Reserved</p>
 		<p>电话：010-****888    京ICP备*******8号</p>
 	</div>
-	<script type="text/javascript" src="js/register.js"></script>
+	</div>
+
+	<script type="text/javascript" src="{{ static('js/register.js') }}"></script>
 </body>
 </html>
